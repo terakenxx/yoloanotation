@@ -156,9 +156,7 @@ namespace YoloAnotation
             int imgHt = sourceImage.Height;
 
             //"C:\test\1.txt"をShift-JISコードとして開く
-            System.IO.StreamReader sr = new System.IO.StreamReader(
-                filename,
-                System.Text.Encoding.GetEncoding("UTF-8"));
+            System.IO.StreamReader sr = new System.IO.StreamReader(filename);
 
             //内容をすべて読み込む
             while (sr.Peek() > -1)
@@ -174,10 +172,7 @@ namespace YoloAnotation
         {
             //Shift JISで書き込む
             //書き込むファイルが既に存在している場合は、上書きする
-            System.IO.StreamWriter sw = new System.IO.StreamWriter(
-                filename,
-                false,
-                System.Text.Encoding.GetEncoding("UTF-8"));
+            System.IO.StreamWriter sw = new System.IO.StreamWriter( filename, false );
 
             int imgWd = sourceImage.Width;
             int imgHt = sourceImage.Height;
@@ -232,9 +227,29 @@ namespace YoloAnotation
             {
                 Graphics g = Graphics.FromImage(canvasImage);
 
-                Pen pn = new Pen(new SolidBrush(rectCol), 4);
+                Pen pn = new Pen(new SolidBrush(rectCol), 3);
                 pn.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
                 g.DrawRectangle(pn, rect);
+                pn.Dispose();
+
+                g.Flush();
+                g.Dispose();
+            }
+            pictureBox.Image = canvasImage;
+        }
+
+        private void DrawCrossLine(int x, int y)
+        {
+            if (null == workImage) return;
+
+            Bitmap canvasImage = new Bitmap(workImage);
+            {
+                Graphics g = Graphics.FromImage(canvasImage);
+
+                Pen pn = new Pen(new SolidBrush(Color.LightGray), 1);
+                pn.DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
+                g.DrawLine(pn, x, 0, x, workImage.Height);
+                g.DrawLine(pn, 0, y, workImage.Width, y);
                 pn.Dispose();
 
                 g.Flush();
@@ -266,12 +281,16 @@ namespace YoloAnotation
 
         private void pictureBox_MouseMove(object sender, MouseEventArgs e)
         {
-            if(msDown)
+            if (msDown)
             {
-                Rectangle rect = new Rectangle(msx,msy, e.X-msx, e.Y - msy);
+                Rectangle rect = new Rectangle(msx, msy, e.X - msx, e.Y - msy);
                 Color col = idColor[selectedID];
 
                 DrawSelectedRect(rect, col);
+            }
+            else
+            {
+                DrawCrossLine(e.X, e.Y);
             }
         }
 
