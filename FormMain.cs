@@ -68,6 +68,8 @@ namespace YoloAnotation
 
         Bitmap sourceImage;
         Bitmap workImage;
+        Bitmap canvasImage;
+
         string sourceFileName;
 
         List<IDRect> idRects;
@@ -122,11 +124,28 @@ namespace YoloAnotation
             sourceFileName = filename;
 
             {
+                // 前のものを捨てる
                 if (null != sourceImage)
                 {
                     sourceImage.Dispose();
                 }
-                sourceImage = new Bitmap(filename);
+                if (null != workImage)
+                {
+                    workImage.Dispose();
+                }
+                if (null != canvasImage)
+                {
+                    canvasImage.Dispose();
+                }
+
+                // ファイルから読み込んだものを作業領域へコピー
+                var loadImage = new Bitmap(filename);
+                sourceImage = new Bitmap(loadImage);
+                // ファイルは閉じる
+                loadImage.Dispose();
+
+                workImage = new Bitmap(sourceImage);
+                canvasImage = new Bitmap(sourceImage);
             }
 
             {
@@ -188,14 +207,10 @@ namespace YoloAnotation
 
         private void UpdateRectsImage()
         {
-            if(null != workImage)
-            {
-                workImage.Dispose();
-            }
-
-            workImage = new Bitmap(sourceImage);
             {
                 Graphics g = Graphics.FromImage(workImage);
+
+                g.DrawImage(sourceImage, 0, 0);
 
                 foreach (IDRect rc in idRects)
                 {
@@ -223,9 +238,10 @@ namespace YoloAnotation
         {
             if (null == workImage) return;
 
-            Bitmap canvasImage = new Bitmap(workImage);
             {
                 Graphics g = Graphics.FromImage(canvasImage);
+
+                g.DrawImage(workImage, 0, 0);
 
                 Pen pn = new Pen(new SolidBrush(rectCol), 3);
                 pn.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
@@ -242,9 +258,10 @@ namespace YoloAnotation
         {
             if (null == workImage) return;
 
-            Bitmap canvasImage = new Bitmap(workImage);
             {
                 Graphics g = Graphics.FromImage(canvasImage);
+
+                g.DrawImage(workImage, 0, 0);
 
                 Pen pn = new Pen(new SolidBrush(Color.LightGray), 1);
                 pn.DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
