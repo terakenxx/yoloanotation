@@ -9,8 +9,8 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("YoloAnotation")]
-[assembly: AssemblyCopyright("Copyright ©  2021")]
+[assembly: AssemblyProduct("YoloAnotation for Windows10")]
+[assembly: AssemblyCopyright("Copyright ©  2021 kenji.terasaka (https://github.com/terakenxx/yoloanotation)")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
